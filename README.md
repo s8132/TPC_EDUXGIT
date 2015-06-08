@@ -1,4 +1,3 @@
-# TPC_EDUXGIT
 Aby urchomić aplikację należy:
 
 ## Properties file
