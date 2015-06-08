@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:oauth2="http://www.springframework.org/schema/security/oauth2"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+
+
+    <!-- Definition of the Authentication Service -->
+    <security:http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager">
+        <security:intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY"/>
+        <security:anonymous enabled="false"/>
+        <security:http-basic entry-point-ref="clientAuthenticationEntryPoint"/>
+        <security:custom-filter ref="clientCredentialsTokenEndpointFilter" after="BASIC_AUTH_FILTER"/>
+        <security:access-denied-handler ref="oauthAccessDeniedHandler"/>
+    </security:http>
+
+    <!-- Protected resources -->
+    <security:http pattern="/resources/**" create-session="never" entry-point-ref="oauthAuthenticationEntryPoint">
+        <security:anonymous enabled="false"/>
+        <security:intercept-url pattern="/resources/student/**" access="ROLE_STUDENT"/>
+        <security:custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER"/>
+        <security:access-denied-handler ref="oauthAccessDeniedHandler"/>
+    </security:http>
+
+    <!-- Local request protected -->
+    <security:http pattern="/**" authentication-manager-ref="localAuthenticationManager">
+        <security:intercept-url pattern="/logged/**/*" access="ROLE_ADMIN,ROLE_INSTRUCTOR,ROLE_STUDENT"/>
+        <security:intercept-url pattern="/student/**/*" access="ROLE_STUDENT"/>
+        <security:intercept-url pattern="/instructor/**/*" access="ROLE_INSTRUCTOR"/>
+        <security:intercept-url pattern="/admin/**/*" access="ROLE_ADMIN"/>
+        <security:intercept-url pattern="/connect/**/*" access="ROLE_INSTRUCTOR,ROLE_STUDENT"/>
+
+        <security:form-login login-page="/login" password-parameter="epassword" username-parameter="eusername"
+                             login-processing-url="/security/login"
+                             default-target-url="/logged"
+                             authentication-failure-url="/login?error=1"/>
+        <security:logout logout-success-url="/" logout-url="/security/logout"/>
+        <security:access-denied-handler error-page="/security/error"/>
+    </security:http>
+
+    <!-- Authentication manager for local request-->
+    <security:authentication-manager id="localAuthenticationManager">
+        <security:authentication-provider ref="customLocalAuthenticationProvider"/>
+    </security:authentication-manager>
+
+    <!-- Authentication manager for client oAuth2 -->
+    <security:authentication-manager id="clientAuthenticationManager">
+        <security:authentication-provider user-service-ref="client-details-user-service" />
+    </security:authentication-manager>
+
+    <!-- Authentication manager for user oAuth2 -->
+    <security:authentication-manager alias="authenticationManager">
+        <security:authentication-provider ref="customLocalAuthenticationProvider" />
+    </security:authentication-manager>
+
+    <!-- oAuth2 -->
+    <!-- oAuth2 authorization server -->
+    <oauth2:authorization-server  client-details-service-ref="client-details-service" token-services-ref="tokenServices" user-approval-handler-ref="userApprovalHandler">
+        <oauth2:authorization-code/>
+        <oauth2:implicit/>
+        <oauth2:refresh-token/>
+        <oauth2:client-credentials/>
+        <oauth2:password/>
+    </oauth2:authorization-server>
+
+    <!-- oAuth2 resource server -->
+    <oauth2:resource-server id="resourceServerFilter" resource-id="dstest" token-services-ref="tokenServices" />
+
+    <!-- oAuth2 clients -->
+    <oauth2:client-details-service id="client-details-service">
+        <oauth2:client
+                client-id="302a7d556175264c7e5b326827497349"
+                secret="4770414c283a20347c7b553650425773"
+                authorized-grant-types="password,refresh_token"
+                scope="read,write"
+                refresh-token-validity="180"
+                access-token-validity="180"/>
+    </oauth2:client-details-service>
+
+    <oauth2:expression-handler id="oauthExpressionHandler"/>
+    <oauth2:web-expression-handler id="oauthWebExpressionHandler"/>
+
+    <!-- oAuth2 common beans -->
+    <!-- usage in <security:http access-denied-handler ref="oauthAccessDeniedHandler" />-->
+    <bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler"/>
+
+    <!-- Token beans -->
+    <bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore"/>
+    <!-- usage in <oauth2:authorization-server token-services-ref="tokenServices" /> and <oauth2:resource-server token-services-ref="tokenServices" /> -->
+    <bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
+        <property name="tokenStore" ref="tokenStore"/>
+        <property name="supportRefreshToken" value="true"/>
+        <property name="clientDetailsService" ref="client-details-service"/>
+    </bean>
+
+    <!-- oAuth2 client beans -->
+    <!--<bean id="clientDetailsUserService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+        <constructor-arg ref="client-details-service"/>
+    </bean>-->
+    <!-- usage <security:http pattern="/oauth/token" http-basic entry-point-ref="clientAuthenticationEntryPoint"/> -->
+    <bean id="clientAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+        <property name="realmName" value="dstest/client"/>
+        <property name="typeName" value="Basic"/>
+    </bean>
+    <!-- usage <security:http custom-filter ref="clientCredentialsTokenEndpointFilter" after="BASIC_AUTH_FILTER"/> -->
+    <bean id="clientCredentialsTokenEndpointFilter" class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
+        <property name="authenticationManager" ref="clientAuthenticationManager"/>
+    </bean>
+    <!-- usage <security:authentication-manager authentication-provider user-service-ref="client-details-user-service"/> -->
+    <bean id="client-details-user-service" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+        <constructor-arg ref="client-details-service" />
+    </bean>
+    <!-- usage <oauth2:authorization-server user-approval-handler-ref="userApprovalHandler"/> -->
+    <bean id="userApprovalHandler" class="org.springframework.security.oauth2.provider.approval.DefaultUserApprovalHandler"/>
+
+    <!-- oAuth2 resources/user beans -->
+    <!-- usage <security:http pattern="/resources/**" entry-point-ref="oauthAuthenticationEntryPoint"/>-->
+    <bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+        <property name="realmName" value="dstest"/>
+    </bean>
+
+    <!-- Beans for local request (and oAuth2 users auth) -->
+    <bean id="webexpressionHandler" class="org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler" />
+    <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.Md5PasswordEncoder" />
+    <bean id="userDetailsService" class="pl.edu.pjwstk.s8132.service.user.UserDetailsService"/>
+    <bean id="customLocalAuthenticationProvider" class="org.springframework.security.authentication.dao.DaoAuthenticationProvider">
+        <property name="userDetailsService" ref="userDetailsService"/>
+        <property name="passwordEncoder" ref="passwordEncoder"/>
+    </bean>
+</beans>

@@ -1,0 +1,14 @@
+<div class="col-sm-12 col-md-12 main">
+    <h1 class="page-header">Twoje przedmioty</h1>
+    <div class="row">
+        <div class="col-xs-3" ng-repeat="subject in subjects">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3 class="panel-title">{{subject.name}} ({{subject.code}})</h3>
+                    <br/>
+                    <a ui-sref="main.task({subjectId: subject.id})" class="btn btn-primary btn-block">Przejdź do zadań</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

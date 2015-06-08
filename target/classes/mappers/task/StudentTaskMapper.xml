@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.edu.pjwstk.s8132.store.persistence.dao.task.StudentTaskDaoImpl">
+
+    <resultMap id="studentTask" type="studentTask">
+        <id property="id" column="st_id"/>
+        <result property="repository" column="st_repository"/>
+        <result property="points" column="st_points"/>
+        <result property="studentId" column="st_student_id"/>
+        <result property="taskId" column="st_task_id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="StudentTask">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            select nextval('student_task_seq')
+        </selectKey>
+        insert into student_task
+        (st_id,
+        st_repository,
+        st_points,
+        st_student_id,
+        st_task_id
+        )
+        values
+        (#{id},
+        #{repository},
+        #{points},
+        #{studentId},
+        #{taskId}
+        )
+    </insert>
+
+    <update id="update" parameterType="StudentTask">
+        update student_task set
+        st_repository = #{repository},
+        st_points = #{points},
+        st_student_id = #{studentId},
+        st_task_id = #{taskId}
+        where st_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="StudentTask">
+        delete from student_task where st_id = #{id}
+    </delete>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from student_task where st_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="studentTask">
+        select * from student_task where st_id = #{id}
+    </select>
+
+    <select id="getByTask" resultMap="studentTask" parameterType="Long">
+        select * from student_task where st_task_id=#{id}
+    </select>
+
+    <select id="getByStudent" resultMap="studentTask" parameterType="Long">
+        select * from student_task where st_student_id=#{id}
+    </select>
+
+    <select id="getByTaskAndStudent" resultMap="studentTask" parameterType="map">
+        select * from student_task where st_task_id=#{task} and st_student_id=#{student}
+    </select>
+
+    <select id="getByRepository" resultMap="studentTask" parameterType="String">
+        select * from student_task where st_repository=#{repo}
+    </select>
+</mapper>

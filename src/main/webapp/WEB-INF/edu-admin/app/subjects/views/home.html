@@ -1,0 +1,63 @@
+<h1 class="page-header">
+    Przedmioty
+    <div class="btn-group pull-right">
+        <a class="btn btn-success" ui-sref="subjectAdd">
+            <span class="glyphicon glyphicon-plus"></span> Dodaj przedmiot
+        </a>
+    </div>
+</h1>
+<div>
+    <table class="table table-bordered" ng-table="tableParams" show-filter="true" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+        <tr ng-repeat="subject in $data">
+            <td data-title="'id'" sortable="'id'" style="text-align: center; vertical-align: middle;">
+                {{subject.id}}
+            </td>
+            <td data-title="'kod'" sortable="'code'" filter="{'code': 'text'}" style="text-align: center; vertical-align: middle;">
+                <span ng-if="!subject.$edit">{{subject.code}}</span>
+                <div ng-if="subject.$edit">
+                    <input type="text" class="form-control" ng-model="subject.code">
+                </div>
+            </td>
+            <td data-title="'Nazwa'" sortable="'name'" filter="{'name': 'text'}" style="text-align: center; vertical-align: middle;">
+                <span ng-if="!subject.$edit">{{subject.name}}</span>
+                <div ng-if="subject.$edit">
+                    <input type="text" class="form-control" ng-model="subject.name">
+                </div>
+            </td>
+            <td data-title="'Status'" sortable="'status'" style="text-align: center; vertical-align: middle;">
+                <span ng-if="!subject.$edit">
+                    <span class="label label-danger" ng-if="subject.status==='INACTIVE'">nieaktywny</span>
+                    <span class="label label-success" ng-if="subject.status==='ACTIVE'">aktywny</span>
+                </span>
+                <div ng-if="subject.$edit">
+                    <div class="btn-group">
+                        <label class="btn btn-primary" ng-model="subject.status" btn-radio="'ACTIVE'">Aktywny</label>
+                        <label class="btn btn-primary" ng-model="subject.status" btn-radio="'INACTIVE'">Nieaktywny</label>
+                    </div>
+                </div>
+            </td>
+            <td data-title="'Akcje'" style="text-align: center; vertical-align: middle;">
+                <a class="btn btn-primary btn-sm" ng-click="subject.$edit=true" ng-if="!subject.$edit">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    Edytuj
+                </a>
+                <a class="btn btn-danger btn-sm" ng-if="!subject.$edit" ng-click="deleteSubject(subject, $index)">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Usuń
+                </a>
+                <a ui-sref="subjectAddStudent({id: subject.id})" class="btn btn-success btn-sm" ng-if="!subject.$edit">
+                    <span class="glyphicon glyphicon-plus"></span>
+                    Zapisz studentów
+                </a>
+                <a class="btn btn-success btn-sm" ng-click="updateSubject(subject)" ng-if="subject.$edit">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Zapisz
+                </a>
+                <a class="btn btn-warning btn-sm" ng-click="subject.$edit=false" ng-if="subject.$edit">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Anuluj
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>

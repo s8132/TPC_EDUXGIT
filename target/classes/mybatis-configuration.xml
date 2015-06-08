@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <settings>
+        <setting name="cacheEnabled" value="true"/>
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+    </settings>
+
+    <typeAliases>
+        <typeAlias alias="UserProfile" type="pl.edu.pjwstk.s8132.domain.user.UserProfile"/>
+        <typeAlias alias="Subject" type="pl.edu.pjwstk.s8132.domain.subject.Subject"/>
+        <typeAlias alias="StudentSubject" type="pl.edu.pjwstk.s8132.domain.subject.StudentSubject"/>
+        <typeAlias alias="Task" type="pl.edu.pjwstk.s8132.domain.task.Task"/>
+        <typeAlias alias="StudentTask" type="pl.edu.pjwstk.s8132.domain.task.StudentTask"/>
+    </typeAliases>
+</configuration>

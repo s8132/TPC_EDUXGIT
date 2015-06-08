@@ -1,0 +1,81 @@
+<h1 class="page-header">
+    Dodawanie użytkownika
+</h1>
+<form class="panel" name="userForm" ng-class="{'panel-danger': userForm.$invalid, 'panel-default': userForm.$valid}" ng-submit="saveNewUser()" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group has-feedback" ng-class="{'has-error': userForm.firstName.$invalid, 'has-success': userForm.firstName.$valid}">
+                    <label for="firstName" class="control-label">Imię</label>
+                    <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Wpisz imię" ng-model="user.firstName" required ng-minlength="3">
+                    <span class="help-block" ng-show="userForm.firstName.$error.required">To pole jest wymagane</span>
+                    <span class="help-block" ng-show="userForm.firstName.$error.minlength">Co najmniej 3 znaki</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="userForm.firstName.$valid"></span>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group has-feedback" ng-class="{'has-error': userForm.lastName.$invalid, 'has-success': userForm.lastName.$valid}">
+                    <label for="lastName" class="control-label">Nazwisko</label>
+                    <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Wpisz nazwisko" ng-model="user.lastName" required ng-minlength="3">
+                    <span class="help-block" ng-show="userForm.lastName.$error.required">To pole jest wymagane</span>
+                    <span class="help-block" ng-show="userForm.lastName.$error.minlength">Co najmniej 3 znaki</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="userForm.lastName.$valid"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group has-feedback" ng-class="{'has-error': userForm.email.$invalid, 'has-success': userForm.email.$valid}">
+                    <label for="email" class="control-label">E-mail</label>
+                    <input type="text" class="form-control" id="email" name="email" placeholder="Wpisz e-mail" ng-model="user.email" required ng-pattern="/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i">
+                    <span class="help-block" ng-show="userForm.email.$error.required">To pole jest wymagane</span>
+                    <span class="help-block" ng-show="userForm.email.$error.pattern">To nie jest e-mail</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="userForm.email.$valid"></span>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="form-group">
+                    <label>Rola</label>
+                    <div class="btn-group btn-group-justified">
+                        <label class="btn btn-primary" ng-model="user.authority" btn-radio="'ROLE_STUDENT'">Student</label>
+                        <label class="btn btn-primary" ng-model="user.authority" btn-radio="'ROLE_INSTRUCTOR'">Wykladowca</label>
+                        <label class="btn btn-primary" ng-model="user.authority" btn-radio="'ROLE_ADMIN'">Administrator</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group">
+                    <label>Aktywny</label>
+                    <br/>
+                    <toggle-switch ng-model="user.enabled" on-label="tak" off-label="nie"><toggle-switch>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="form-group has-feedback" ng-class="{'has-error': userForm.password.$invalid, 'has-success': userForm.password.$valid}">
+                    <label for="pass">Hasło</label>
+                    <input type="password" class="form-control" id="pass" name="password" ng-model="user.password" required>
+                    <span class="help-block" ng-show="userForm.password.$error.required">To pole jest wymagane</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="userForm.password.$valid"></span>
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <div class="form-group has-feedback" ng-class="{'has-error': userForm.confirmPassword.$invalid, 'has-success': userForm.confirmPassword.$valid}">
+                    <label for="passRepeat">Powtórz hasło</label>
+                    <input type="password" class="form-control" id="passRepeat" name="confirmPassword" ng-model="confirmPassword" match="user.password">
+                    <span class="help-block" ng-show="userForm.confirmPassword.$error.match">Hasł się nie zgadzają</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="userForm.confirmPassword.$valid"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-11"></div>
+            <div class="col-xs-1">
+                <button type="submit" class="btn btn-success btn-block" ng-disabled="userForm.$invalid">Zapisz</button>
+            </div>
+        </div>
+    </div>
+</form>

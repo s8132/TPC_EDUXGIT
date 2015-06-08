@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.edu.pjwstk.s8132.store.persistence.dao.subject.StudentSubjectDaoImpl">
+
+    <resultMap id="studentSubject" type="StudentSubject">
+        <id property="id" column="ss_id"/>
+        <result property="studentId" column="ss_student_id"/>
+        <result property="subjectId" column="ss_subject_id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="StudentSubject">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            select nextval('student_subject_seq')
+        </selectKey>
+        insert into student_subject
+        (ss_id,
+        ss_student_id,
+        ss_subject_id)
+        values
+        (#{id},
+        #{studentId},
+        #{subjectId})
+    </insert>
+
+    <update id="update" parameterType="StudentSubject">
+        update student_subject set
+        ss_student = #{studentId},
+        ss_subject = #{subjectId}
+        where ss_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="StudentSubject">
+        delete from student_subject where ss_id = #{id}
+    </delete>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from student_subject where ss_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="studentSubject">
+        select * from student_subject where ss_id = #{id}
+    </select>
+
+    <select id="getByStudentAndSubject" resultMap="studentSubject" parameterType="map">
+        select * from student_subject where ss_student_id=#{student} and ss_subject_id=#{subject}
+    </select>
+</mapper>

@@ -1,0 +1,54 @@
+<h1 class="page-header">{{task.name}}</h1>
+<ul class="nav nav-tabs">
+    <li><a href="">Wybrane repozytorium</a></li>
+    <li><a href="">Informacje do zadania</a></li>
+    <li><a href="">Issues od wykładowcy</a></li>
+    <li><a href="">Zasady pracy</a></li>
+</ul>
+<div class="panel" ng-class="{'panel-default': task.repository!==null, 'panel-danger': task.repository===null}">
+    <div class="panel-heading">
+        <h4 class="panel-title">Informacje do zadnia {{showChangeRepoForm}}</h4>
+    </div>
+    <div class="panel-body" cg-busy="{promise:loadRepo,message:'Pobieram listę repozytoriów'}">
+        <h4>Twoje repozytorium</h4>
+        <div ng-if="!showChangeRepoForm">
+            <div class="btn-group" ng-if="task.repository===null">
+                <a class="btn btn-danger" disabled="disabled">Nie ustawiłeś jeszcze repozytorium do tego zadania</a>
+                <a class="btn btn-success" ng-click="changeRepo()">Dodaj repozytorium</a>
+            </div>
+            <div class="btn-group" ng-if="task.repository!==null">
+                <a class="btn btn-default" target="_blank" ng-href="https://github.com/{{task.githubAccount}}/{{task.repository}}">https://github.com/{{task.githubAccount}}/{{task.repository}}&nbsp;&nbsp;</a>
+                <a class="btn btn-primary" ng-click="changeRepo()">Zmień repozytorium</a>
+            </div>
+        </div>
+        <div class="col-lg-6" ng-if="showChangeRepoForm">
+            <div class="input-group">
+                <span class="input-group-addon">Wybierz repozytorium</span>
+                <select class="form-control" ng-model="task.repository" ng-options="repo for repo in repositories"></select>
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button" ng-click="refreshRepositories()">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </button>
+                    <button class="btn btn-success" type="button" ng-click="updateRepository()">Zapisz</button>
+                </span>
+            </div>
+        </div>
+        <br/>
+        <br/>
+        <div class="row">
+            <div class="col-xs-4">
+                <p><b>Start zadania: </b> {{task.startDate | date:'dd.MM.yyyy HH:mm:ss'}}</p>
+            </div>
+            <div class="col-xs-4">
+                <p><b>Koniec zadania: </b> {{task.stopDate | date:'dd.MM.yyyy HH:mm:ss'}}</p>
+            </div>
+            <div class="col-xs-4">
+                <p><b>Punkty za zadanie: </b> {{task.points}}/{{task.maxPoints}}</p>
+            </div>
+        </div>
+        <dl>
+            <dt>Opis zadania:</dt>
+            <dd>{{task.description}}</dd>
+        </dl>
+    </div>
+</div>

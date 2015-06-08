@@ -1,0 +1,59 @@
+<div class="col-sm-12 col-md-12 main">
+    <h1 class="page-header">Dodawania zadania</h1>
+    <form class="panel" name="addTaskForm" ng-class="{'panel-danger': addTaskForm.$invalid, 'panel-default': !addTaskForm.$invalid}" ng-submit="saveTask()" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-6">
+                    <div class="form-group has-feedback" ng-class="{'has-error': addTaskForm.taskName.$invalid}">
+                        <label for="taskName">Nazwa zadania</label>
+                        <input type="text" class="form-control" id="taskName" ng-model="task.name" required name="taskName">
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-4" ng-if="!edit">
+                            <div class="form-group">
+                                <label>Start zadania</label>
+                                <br/>
+                                <datetimepicker ng-model="task.startDate" min-date="startDateParams.minDate" show-weeks="startDateParams.showWeeks" date-format="dd-MM-yyyy" readonly-time="false" show-meridian="false" datepicker-options="{show-button-bar:false}"></datetimepicker>
+                            </div>
+                        </div>
+                        <div class="col-xs-4" ng-if="!edit">
+                            <div class="form-group">
+                                <label>Koniec zadania</label>
+                                <br/>
+                                <datetimepicker ng-model="task.stopDate" min-date="task.startDate" show-weeks="startDateParams.showWeeks" date-format="dd-MM-yyyy" readonly-time="false" show-meridian="false"></datetimepicker>
+                            </div>
+                        </div>
+                        <div class="col-xs-4" ng-if="edit">
+                            <div class="form-group">
+                                <label>Koniec zadania</label>
+                                <br/>
+                                <datetimepicker ng-model="task.stopDate" show-weeks="true" date-format="dd-MM-yyyy" readonly-time="false" show-meridian="false"></datetimepicker>
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="form-group">
+                                <label>Liczba punktów do zdobycia</label>
+                                <br/>
+                                <input type="text" name="field" ng-model="task.maxPoints" ui-number-mask class="form-control" ui-hide-group-sep min="1.0" max="100.0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <label for="taskDescription">Opis zadania</label>
+                        <textarea class="form-control" ng-model="task.description" id="taskDescription"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel-footer">
+            <div class="row">
+                <div class="col-xs-10"></div>
+                <div class="col-xs-2">
+                    <button type="submit" class="btn btn-block btn-success" ng-disabled="addTaskForm.$invalid">Zapisz</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

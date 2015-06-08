@@ -1,0 +1,84 @@
+html {
+    position: relative;
+    min-height: 100%;
+}
+body {
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
+    background: #e5e5e5; /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover,  #e5e5e5 0%, #bcbcbc 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,#e5e5e5), color-stop(100%,#bcbcbc)); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover,  #e5e5e5 0%,#bcbcbc 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover,  #e5e5e5 0%,#bcbcbc 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover,  #e5e5e5 0%,#bcbcbc 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center,  #e5e5e5 0%,#bcbcbc 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#bcbcbc',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
+}
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    /* Set the fixed height of the footer here */
+    height: 60px;
+    background-color: #f5f5f5;
+}
+
+
+.container {
+    width: auto;
+    max-width: 680px;
+    padding: 0 15px;
+}
+.container .text-muted {
+    margin: 20px 0;
+}
+
+.form-login > .form-group{
+    margin: 0;
+}
+.btn-flag {
+    color: #ffffff;
+    background-color: #A6A6A6;
+    border-color: #8F8F8F;
+}
+
+.btn-flag:hover,
+.btn-flag:focus,
+.btn-flag:active,
+.btn-flag.active,
+.open .dropdown-toggle.btn-flag {
+    color: #ffffff;
+    background-color: #808080;
+    border-color: #8F8F8F;
+}
+
+.btn-flag:active,
+.btn-flag.active,
+.open .dropdown-toggle.btn-flag {
+    background-image: none;
+}
+
+.btn-flag.disabled,
+.btn-flag[disabled],
+fieldset[disabled] .btn-flag,
+.btn-flag.disabled:hover,
+.btn-flag[disabled]:hover,
+fieldset[disabled] .btn-flag:hover,
+.btn-flag.disabled:focus,
+.btn-flag[disabled]:focus,
+fieldset[disabled] .btn-flag:focus,
+.btn-flag.disabled:active,
+.btn-flag[disabled]:active,
+fieldset[disabled] .btn-flag:active,
+.btn-flag.disabled.active,
+.btn-flag[disabled].active,
+fieldset[disabled] .btn-flag.active {
+    background-color: #A6A6A6;
+    border-color: #8F8F8F;
+}
+
+.btn-flag .badge {
+    color: #A6A6A6;
+    background-color: #ffffff;
+}

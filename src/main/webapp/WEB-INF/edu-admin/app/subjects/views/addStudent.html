@@ -1,0 +1,75 @@
+<h1 class="page-header">
+    Zapisywanie studentów <small>{{subject.name}}</small>
+</h1>
+<div class="panel panel-default" cg-busy="{promise:fetchSavedUser,message:'Traw zapis. Poczekaj chwile'}">
+    <div class="panel-heading">
+        <h4 class="panel-title">Studenci niezapisani</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered" ng-table="unsavedTableParams" show-filter="true">
+            <tr ng-repeat="user in $data" ng-init="user.checked=false" ng-class="{'info': user.checked}">
+                <td data-title="''" style="text-align: center; vertical-align: middle;">
+                    <input type="checkbox" ng-model="user.checked" ng-click="addUserToSave(user)">
+                </td>
+                <td data-title="'id'" sortable="'id'" style="text-align: center; vertical-align: middle;">
+                    {{user.id}}
+                </td>
+                <td data-title="'Imię'" sortable="'firstName'" filter="{'firstName': 'text'}" style="vertical-align: middle;">
+                    {{user.firstName}}
+                </td>
+                <td data-title="'Nazwisko'" sortable="'lastName'" filter="{'lastName': 'text'}" style="vertical-align: middle;">
+                    {{user.lastName}}
+                </td>
+                <td data-title="'E-mail'" sortable="'email'" filter="{'email': 'text'}" style="vertical-align: middle;">
+                    {{user.email}}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-10">
+                Liczba zaznaczonych studentów do zapisania: {{userToSave.length}}
+            </div>
+            <div class="col-xs-2">
+                <a class="btn btn-success btn-block" ng-disabled="userToSave.length===0" ng-click="addUsers()">Dodaj wybranych</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default" cg-busy="{promise:fetchUnsavedUser,message:'Traw zapis. Poczekaj chwile'}">
+    <div class="panel-heading">
+        <h4 class="panel-title">Studenci zapisani</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-bordered" ng-table="savedTableParams" show-filter="true">
+            <tr ng-repeat="user in $data" ng-init="user.checked=false" ng-class="{'info': user.checked}">
+                <td data-title="''" style="text-align: center; vertical-align: middle;">
+                    <input type="checkbox" ng-model="user.checked" ng-click="addUserToLose(user)">
+                </td>
+                <td data-title="'id'" sortable="'id'" style="text-align: center; vertical-align: middle;">
+                    {{user.id}}
+                </td>
+                <td data-title="'Imię'" sortable="'firstName'" filter="{'firstName': 'text'}" style="vertical-align: middle;">
+                    {{user.firstName}}
+                </td>
+                <td data-title="'Nazwisko'" sortable="'lastName'" filter="{'lastName': 'text'}" style="vertical-align: middle;">
+                    {{user.lastName}}
+                </td>
+                <td data-title="'E-mail'" sortable="'email'" filter="{'email': 'text'}" style="vertical-align: middle;">
+                    {{user.email}}
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-10">
+                Liczba zaznaczonych studentów do usunięcia: {{userToLose.length}}
+            </div>
+            <div class="col-xs-2">
+                <a class="btn btn-danger btn-block" ng-disabled="userToLose.length===0" ng-click="removeUsers()">Usuń wybranych</a>
+            </div>
+        </div>
+    </div>
+</div>

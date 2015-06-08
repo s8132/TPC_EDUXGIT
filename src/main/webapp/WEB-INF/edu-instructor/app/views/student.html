@@ -1,0 +1,29 @@
+<div class="well">
+    <div>
+        <b>Repozytorium:</b> <a target="_blank" ng-href="https://github.com/{{student.githubAccount}}/{{student.repository}}">https://github.com/{{student.githubAccount}}/{{student.repository}}</a>
+    </div>
+    <div class="row-height-align">
+        <b>Punkty:</b> <span editable-range="student.points" e-form="txtBtnForm" e-max="{{task.maxPoints}}" e-step="0.5" onbeforesave="beforeUpdatePoints()" onaftersave="afterUpdatePoints()">{{student.points}}/{{task.maxPoints}}</span>
+        <a class="btn btn-default" ng-click="txtBtnForm.$show()" ng-hide="txtBtnForm.$visible">Zmień punkty</a>
+    </div>
+</div>
+<ul class="nav nav-tabs">
+    <li role="presentation" ui-sref-active="active">
+        <a ui-sref="main.task.details.student.commits({user: student.githubAccount, repo: student.repository})">Commits</a>
+    </li>
+    <li role="presentation" ui-sref-active="active">
+        <a ui-sref="main.task.details.student.branches({user: student.githubAccount, repo: student.repository})">Branches</a>
+    </li>
+    <li role="presentation" ui-sref-active="active">
+        <a ui-sref="main.task.details.student.releases({user: student.githubAccount, repo: student.repository})">Releases</a>
+    </li>
+    <li role="presentation" ui-sref-active="active">
+        <a ui-sref="main.task.details.student.languages({user: student.githubAccount, repo: student.repository})">Languages</a>
+    </li>
+    <li role="presentation" ui-sref-active="active">
+        <a ui-sref="main.task.details.student.issues({user: student.githubAccount, repo: student.repository})">Issues</a>
+    </li>
+</ul>
+<div style="border: 1px solid #ddd; border-top: none; padding: 10px;" ui-view="repo">
+
+</div>

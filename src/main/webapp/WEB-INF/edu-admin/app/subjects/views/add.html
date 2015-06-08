@@ -1,0 +1,57 @@
+<h1 class="page-header">
+    Dodawanie przedmiotu
+</h1>
+<form name="subjectForm" class="panel" ng-class="{'panel-danger': subjectForm.$invalid, 'panel-default': subjectForm.$valid}" ng-submit="saveSubject()" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-10">
+                <div class="form-group has-feedback" ng-class="{'has-error': subjectForm.subjectName.$invalid, 'has-success': subjectForm.subjectName.$valid}">
+                    <label for="subjectName">Nazwa przedmiotu</label>
+                    <input type="text" class="form-control" id="subjectName" name="subjectName" ng-model="subject.name" required ng-blur="generateCode();">
+                    <span class="help-block" ng-show="subjectForm.subjectName.$error.required">To pole jest wymagane</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="subjectForm.subjectName.$valid"></span>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div class="form-group has-feedback" ng-class="{'has-error': subjectForm.subjectCode.$invalid, 'has-success': subjectForm.subjectCode.$valid}">
+                    <label for="subjectCode">Kod</label>
+                    <input type="text" class="form-control" id="subjectCode" ng-model="subject.code" name="subjectCode" required>
+                    <span class="help-block" ng-show="subjectForm.subjectCode.$error.required">To pole jest wymagane</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="subjectForm.subjectCode.$valid"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="form-group has-feedback" ng-class="{'has-error': subjectForm.subjectTeacherId.$invalid, 'has-success': subjectForm.subjectTeacherId.$valid}">
+                    <label for="subjectTeacher">Wykładowca</label>
+                    <ui-select ng-model="subject.teacherId" id="subjectTeacher" name="subjectTeacherId" required>
+                        <ui-select-match placeholder="Wybierz wykładowcę">{{$select.selected.firstName}} {{$select.selected.lastName}}</ui-select-match>
+                        <ui-select-choices repeat="teacher.id as teacher in teachers | filter: $select.search">
+                            {{teacher.firstName}} {{teacher.lastName}}
+                        </ui-select-choices>
+                    </ui-select>
+                    <span class="help-block" ng-show="subjectForm.subjectTeacherId.$error.required">To pole jest wymagane</span>
+                    <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" ng-if="subjectForm.subjectTeacherId.$valid"></span>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <div class="form-group">
+                    <label>Status</label>
+                    <div class="btn-group btn-group-justified">
+                        <label class="btn btn-primary" ng-model="subject.status" btn-radio="'ACTIVE'">Aktywny</label>
+                        <label class="btn btn-primary" ng-model="subject.status" btn-radio="'INACTIVE'">Nieaktywny</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel-footer">
+        <div class="row">
+            <div class="col-xs-11"></div>
+            <div class="col-xs-1">
+                <button type="submit" class="btn btn-success btn-block" ng-disabled="subjectForm.$invalid">Zapisz</button>
+            </div>
+        </div>
+    </div>
+</form>

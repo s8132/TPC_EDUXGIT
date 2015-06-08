@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="edux-git:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="edux-git-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="edux-git:war exploded" />
+    </root>
+  </artifact>
+</component>

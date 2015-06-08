@@ -1,0 +1,36 @@
+<h1 class="page-header">
+    {{task.name}}
+    <div class="btn-group pull-right">
+        <a class="btn btn-primary" ui-sref="main.task.edit({taskId: task.id})">
+            <span class="glyphicon glyphicon-pencil"></span> Edytuj zadanie
+        </a>
+    </div>
+</h1>
+<div class="panel panel-default" ng-init="descPanel = false">
+    <div class="panel-heading" ng-click="descPanel = !descPanel">
+        <h4 class="panel-title">
+            Opis zadania
+            <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': !descPanel, 'glyphicon-chevron-up': descPanel}"></i>
+        </h4>
+    </div>
+    <div class="panel-body" ng-show="descPanel">
+        <p>{{task.description}}</p>
+    </div>
+</div>
+<hr/>
+<div class="row">
+    <div class="col-xs-3">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <ul class="nav nav-stacked" ui-sref-active="active">
+                    <li ng-repeat="student in students" ng-class="{'disabled': student.repository===null || student.githubAccount===null}">
+                        <a ui-sref="main.task.details.student({studentId: student.id})">{{student.firstName}} {{student.lastName}} {{student.s}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-9" ui-view="student">
+        <i>Wybierz studenta</i>
+    </div>
+</div>

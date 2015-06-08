@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.edu.pjwstk.s8132.store.persistence.dao.user.UserProfileDaoImpl">
+
+    <resultMap id="userProfile" type="UserProfile">
+        <id property="id" column="up_id"/>
+        <result property="email" column="up_email"/>
+        <result property="password" column="up_password"/>
+        <result property="enabled" column="up_enabled"/>
+        <result property="firstName" column="up_first_name"/>
+        <result property="lastName" column="up_last_name"/>
+        <result property="authority" column="up_authority"/>
+        <result property="githubAccount" column="up_github_account"/>
+        <result property="rid" column="up_rid"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="UserProfile">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            select nextval('user_profile_seq')
+        </selectKey>
+        insert into user_profile
+        (up_id,
+        up_email,
+        up_password,
+        up_enabled,
+        up_first_name,
+        up_last_name,
+        up_authority,
+        up_github_account,
+        up_rid)
+        values
+        (#{id},
+        #{email},
+        md5(#{password}),
+        #{enabled},
+        #{firstName},
+        #{lastName},
+        #{authority},
+        #{githubAccount},
+        #{rid})
+    </insert>
+
+    <update id="update" parameterType="UserProfile">
+        update user_profile set
+        up_first_name = #{firstName},
+        up_last_name = #{lastName},
+        up_email = #{email},
+        up_enabled = #{enabled},
+        up_authority = #{authority},
+        up_github_account = #{githubAccount},
+        up_rid = #{rid}
+        where up_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="UserProfile">
+        delete from user_profile where up_id = #{id}
+    </delete>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from user_profile where up_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="userProfile">
+        select * from user_profile where up_id = #{id}
+    </select>
+
+    <select id="getByEmail" parameterType="String" resultMap="userProfile">
+        select * from user_profile where up_email = #{email}
+    </select>
+
+    <select id="getAll" resultMap="userProfile">
+        select * from user_profile
+    </select>
+
+    <select id="getAllWithoutLogged" resultMap="userProfile" parameterType="Long">
+        select * from user_profile where up_id != #{id}
+    </select>
+
+    <select id="getByAuthority" resultMap="userProfile" parameterType="String">
+        select * from user_profile where up_authority = #{authority}
+    </select>
+
+    <select id="getSavedSubject" resultMap="userProfile" parameterType="Long">
+        select * from user_profile where up_id in
+          (select ss_student_id from student_subject where ss_subject_id=#{id})
+          and up_authority='ROLE_STUDENT'
+    </select>
+
+    <select id="getUnsavedSubject" resultMap="userProfile" parameterType="Long">
+        select * from user_profile where up_id not in
+        (select ss_student_id from student_subject where ss_subject_id=#{id})
+        and up_authority='ROLE_STUDENT'
+    </select>
+
+    <select id="getByGitHubAccount" resultMap="userProfile" parameterType="String">
+        select * from user_profiel where up_github_account = #{account}
+    </select>
+</mapper>

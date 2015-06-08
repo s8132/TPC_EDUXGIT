@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:websocket="http://www.springframework.org/schema/websocket"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/websocket
+        http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+    <context:component-scan base-package="pl.edu.pjwstk.s8132" />
+    <context:property-placeholder properties-ref="props"/>
+    <util:properties id="props" location="classpath:app.properties"/>
+
+    <mvc:annotation-driven/>
+
+    <!-- Mobile ViewResolver -->
+    <bean id="liteDeviceDelegatingViewResolver" class="org.springframework.mobile.device.view.LiteDeviceDelegatingViewResolver">
+        <constructor-arg>
+            <bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+                <property name="cache" value="${freemarker.template.cache}"/>
+                <property name="prefix" value="${freemarker.template.prefix}"/>
+                <property name="suffix" value="${freemarker.template.suffix}"/>
+                <property name="contentType" value="text/html;charset=UTF-8"/>
+            </bean>
+        </constructor-arg>
+        <property name="mobilePrefix" value="mobile/"/>
+        <property name="tabletPrefix" value="tablet/"/>
+        <property name="enableFallback" value="true"/>
+    </bean>
+
+    <!-- ViewResolver -->
+    <bean id="freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+        <property name="templateLoaderPath" value="${freemarker.views.path}"/>
+        <property name="freemarkerSettings">
+            <props>
+                <prop key="default_encoding">${freemarker.encoding}</prop>
+                <prop key="number_format">${freemarker.number.format}</prop>
+                <prop key="template_exception_handler">${freemarker.exception.handler}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+        <property name="cache" value="${freemarker.template.cache}"/>
+        <property name="prefix" value="${freemarker.template.prefix}"/>
+        <property name="suffix" value="${freemarker.template.suffix}"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
+    </bean>
+
+    <!-- Location config -->
+    <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+        <property name="paramName" value="lang"/>
+    </bean>
+
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="pl"/>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="useCodeAsDefaultMessage" value="true"/>
+        <property name="cacheSeconds" value="0"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="basenames">
+            <list>
+                <value>classpath:message/login</value>
+            </list>
+        </property>
+    </bean>
+
+    <mvc:resources mapping="/edu-admin/**" location="/WEB-INF/edu-admin/"/>
+    <mvc:resources mapping="/edu-instructor/**" location="/WEB-INF/edu-instructor/"/>
+    <mvc:resources mapping="/edu-student/**" location="/WEB-INF/edu-student/"/>
+    <mvc:resources mapping="*.html" location="/" />
+
+    <websocket:message-broker application-destination-prefix="/ws">
+        <websocket:stomp-endpoint path="/test">
+            <websocket:sockjs/>
+        </websocket:stomp-endpoint>
+        <websocket:simple-broker prefix="/user"/>
+    </websocket:message-broker>
+
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="org.springframework.mobile.device.site.SitePreferenceWebArgumentResolver"/>
+            <bean class="org.springframework.mobile.device.DeviceWebArgumentResolver"/>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+    <mvc:default-servlet-handler />
+    <mvc:interceptors>
+        <bean class="org.springframework.mobile.device.DeviceResolverHandlerInterceptor" />
+        <bean class="org.springframework.mobile.device.site.SitePreferenceHandlerInterceptor" />
+        <ref bean="localeChangeInterceptor"/>
+    </mvc:interceptors>
+
+    <import resource="appcontext-store.xml"/>
+    <import resource="appcontext-security.xml"/>
+</beans>

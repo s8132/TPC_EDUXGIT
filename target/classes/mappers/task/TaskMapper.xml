@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.edu.pjwstk.s8132.store.persistence.dao.task.TaskDaoImpl">
+
+    <resultMap id="task" type="Task">
+        <id property="id" column="t_id"/>
+        <result property="name" column="t_name"/>
+        <result property="description" column="t_description"/>
+        <result property="startDate" column="t_start_date"/>
+        <result property="stopDate" column="t_stop_date"/>
+        <result property="maxPoints" column="t_max_points"/>
+        <result property="subjectId" column="t_subject_id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Task">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            select nextval('task_seq')
+        </selectKey>
+        insert into task
+        (t_id,
+        t_name,
+        t_description,
+        t_start_date,
+        t_stop_date,
+        t_max_points,
+        t_subject_id
+        )
+        values
+        (#{id},
+        #{name},
+        #{description},
+        #{startDate},
+        #{stopDate},
+        #{maxPoints},
+        #{subjectId}
+        )
+    </insert>
+
+    <update id="update" parameterType="Task">
+        update task set
+        t_name = #{name},
+        t_description = #{description},
+        t_start_date = #{startDate},
+        t_stop_date = #{stopDate},
+        t_max_points = #{maxPoints},
+        t_subject_id = #{subjectId}
+        where t_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Task">
+        delete from task where t_id = #{id}
+    </delete>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from task where t_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="task">
+        select * from task where t_id = #{id}
+    </select>
+
+    <select id="getBySubject" resultMap="task" parameterType="Long">
+        select * from task where t_subject_id=#{id}
+    </select>
+
+</mapper>

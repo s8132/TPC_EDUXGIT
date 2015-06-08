@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="pl.edu.pjwstk.s8132.store.persistence.dao.subject.SubjectDaoImpl">
+
+    <resultMap id="subject" type="Subject">
+        <id property="id" column="s_id"/>
+        <result property="name" column="s_name"/>
+        <result property="code" column="s_code"/>
+        <result property="status" column="s_status"/>
+        <result property="teacherId" column="s_teacher_id"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="Subject">
+        <selectKey keyProperty="id" resultType="Long" order="BEFORE">
+            select nextval('subject_seq')
+        </selectKey>
+        insert into subject
+        (s_id,
+        s_name,
+        s_code,
+        s_status,
+        s_teacher_id)
+        values
+        (#{id},
+        #{name},
+        #{code},
+        #{status},
+        #{teacherId})
+    </insert>
+
+    <update id="update" parameterType="Subject">
+        update subject set
+        s_name = #{name},
+        s_code = #{code},
+        s_status = #{status},
+        s_teacher_id = #{teacherId}
+        where s_id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="Subject">
+        delete from subject where s_id = #{id}
+    </delete>
+
+    <delete id="deleteById" parameterType="Long">
+        delete from subject where s_id = #{id}
+    </delete>
+
+    <select id="getById" parameterType="Long" resultMap="subject">
+        select * from subject where s_id = #{id}
+    </select>
+
+    <select id="getAll" resultMap="subject">
+        select * from subject
+    </select>
+
+    <select id="getInstructorSubjects" resultMap="subject" parameterType="Long">
+        select * from subject where s_teacher_id = #{id}
+    </select>
+
+    <select id="getStudentSubjects" resultMap="subject" parameterType="Long">
+      select s.* from subject s
+        join student_subject ss on ss.ss_subject_id=s.s_id
+        where ss.ss_student_id=#{id}
+    </select>
+</mapper>

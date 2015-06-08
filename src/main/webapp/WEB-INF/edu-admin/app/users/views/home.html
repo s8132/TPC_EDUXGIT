@@ -1,0 +1,183 @@
+<h1 class="page-header">
+    Użytkownicy
+    <div class="btn-group pull-right">
+        <a class="btn btn-success" ui-sref="userAdd">
+            <span class="glyphicon glyphicon-plus"></span> Dodaj użytkownika
+        </a>
+    </div>
+</h1>
+<div>
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <label>Grupuj po: </label>
+                    <div class="btn-group">
+                        <label class="btn btn-default" ng-model="groupBy" btn-radio="'authority'" ng-change="reloadGroupBy();" uncheckable>Rolach</label>
+                        <label class="btn btn-default" ng-model="groupBy" btn-radio="'enabled'" ng-change="reloadGroupBy();" uncheckable>Aktywny</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered" ng-table="tableParams" show-filter="true">
+        <tr ng-hide="group.$hideRows" ng-repeat="user in $data" ng-if="!tableParams.settings().groupBy" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+            <td data-title="'id'" sortable="'id'" style="text-align: center; vertical-align: middle;">
+                {{user.id}}
+            </td>
+            <td data-title="'Imię'" sortable="'firstName'" filter="{'firstName': 'text'}" style="vertical-align: middle;">
+                <span ng-if="!user.$edit">{{user.firstName}}</span>
+                <div ng-if="user.$edit">
+                    <input class="form-control" type="text" ng-model="user.firstName" />
+                </div>
+            </td>
+            <td data-title="'Nazwisko'" sortable="'lastName'" filter="{'lastName': 'text'}" style="vertical-align: middle;">
+                <span ng-if="!user.$edit">{{user.lastName}}</span>
+                <div ng-if="user.$edit">
+                    <input class="form-control" type="text" ng-model="user.lastName" />
+                </div>
+            </td>
+            <td data-title="'E-mail'" sortable="'email'" filter="{'email': 'text'}" style="vertical-align: middle;">
+                <span ng-if="!user.$edit">{{user.email}}</span>
+                <div ng-if="user.$edit">
+                    <input class="form-control" type="text" ng-model="user.email" />
+                </div>
+            </td>
+            <td data-title="'Rola'" style="text-align: center; vertical-align: middle;" ng-class="{'min-width-role-row': user.$edit}">
+                <span ng-if="!user.$edit">
+                    <span class="label label-default" ng-if="user.authority==='ROLE_STUDENT'">
+                        Student
+                    </span>
+                    <span class="label label-primary" ng-if="user.authority==='ROLE_INSTRUCTOR'">
+                        Wykładowca
+                    </span>
+                    <span class="label label-warning" ng-if="user.authority==='ROLE_ADMIN'">
+                        Administrator
+                    </span>
+                </span>
+                <div ng-if="user.$edit" class="btn-group">
+                    <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_STUDENT'">Student</label>
+                    <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_INSTRUCTOR'">Wykładowca</label>
+                    <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_ADMIN'">Admin</label>
+                </div>
+            </td>
+            <td data-title="'Aktywny'" style="text-align: center; vertical-align: middle;">
+                <span ng-if="!user.$edit">
+                    <span class="label label-danger" ng-if="!user.enabled">
+                        <span class="glyphicon glyphicon-lock"></span>
+                    </span>
+                    <span class="label label-success" ng-if="user.enabled">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                </span>
+                <div ng-if="user.$edit">
+                    <toggle-switch ng-model="user.enabled" on-label="tak" off-label="nie"><toggle-switch>
+                </div>
+            </td>
+            <td data-title="'Akcje'" style="text-align: center; vertical-align: middle;" class="min-width-action-row">
+                <a class="btn btn-primary btn-sm" ng-click="user.$edit=true" ng-if="!user.$edit">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                    Edytuj
+                </a>
+                <a class="btn btn-danger btn-sm" ng-click="removeUser(user, $index)" ng-if="!user.$edit">
+                    <span class="glyphicon glyphicon-trash"></span>
+                    Usuń
+                </a>
+                <a class="btn btn-success btn-sm" ng-click="saveUser(user)" ng-if="user.$edit">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Zapisz
+                </a>
+                <a class="btn btn-warning btn-sm" ng-click="user.$edit=false" ng-if="user.$edit">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    Anuluj
+                </a>
+            </td>
+        </tr>
+        <tbody ng-repeat="group in $groups" ng-if="tableParams.settings().groupBy">
+            <tr class="ng-table-group">
+                <td colspan="{{$columns.length}}">
+                    <a href="" ng-click="group.$hideRows = !group.$hideRows">
+                        <span class="glyphicon" ng-class="{ 'glyphicon-chevron-right': group.$hideRows, 'glyphicon-chevron-down': !group.$hideRows }"></span>
+                        <strong ng-if="groupBy=='authority' && group.value==='ROLE_STUDENT'">Studenci</strong>
+                        <strong ng-if="groupBy=='authority' && group.value==='ROLE_INSTRUCTOR'">Wykladowcy</strong>
+                        <strong ng-if="groupBy=='authority' && group.value==='ROLE_ADMIN'">Administratorzy</strong>
+                        <strong ng-if="groupBy=='enabled' && group.value===true">Aktywni</strong>
+                        <strong ng-if="groupBy=='enabled' && group.value===false">Nieaktywni</strong>
+                    </a>
+                </td>
+            </tr>
+            <tr ng-hide="group.$hideRows" ng-repeat="user in group.data" ng-if="tableParams.settings().groupBy" cg-busy="{promise:promiseLoad,message:'Traw zapis. Poczekaj chwile'}">
+                <td data-title="'id'" sortable="'id'" style="text-align: center; vertical-align: middle;">
+                    {{user.id}}
+                </td>
+                <td data-title="'Imię'" sortable="'firstName'" filter="{'firstName': 'text'}" style="vertical-align: middle;">
+                    <span ng-if="!user.$edit">{{user.firstName}}</span>
+                    <div ng-if="user.$edit">
+                        <input class="form-control" type="text" ng-model="user.firstName" />
+                    </div>
+                </td>
+                <td data-title="'Nazwisko'" sortable="'lastName'" filter="{'lastName': 'text'}" style="vertical-align: middle;">
+                    <span ng-if="!user.$edit">{{user.lastName}}</span>
+                    <div ng-if="user.$edit">
+                        <input class="form-control" type="text" ng-model="user.lastName" />
+                    </div>
+                </td>
+                <td data-title="'E-mail'" sortable="'email'" filter="{'email': 'text'}" style="vertical-align: middle;">
+                    <span ng-if="!user.$edit">{{user.email}}</span>
+                    <div ng-if="user.$edit">
+                        <input class="form-control" type="text" ng-model="user.email" />
+                    </div>
+                </td>
+                <td data-title="'Rola'" style="text-align: center; vertical-align: middle;" ng-class="{'min-width-role-row': user.$edit}">
+                <span ng-if="!user.$edit">
+                    <span class="label label-default" ng-if="user.authority==='ROLE_STUDENT'">
+                        Student
+                    </span>
+                    <span class="label label-primary" ng-if="user.authority==='ROLE_INSTRUCTOR'">
+                        Wykładowca
+                    </span>
+                    <span class="label label-warning" ng-if="user.authority==='ROLE_ADMIN'">
+                        Administrator
+                    </span>
+                </span>
+                    <div ng-if="user.$edit" class="btn-group">
+                        <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_STUDENT'">Student</label>
+                        <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_INSTRUCTOR'">Wykładowca</label>
+                        <label class="btn btn-default" ng-model="user.authority" btn-radio="'ROLE_ADMIN'">Admin</label>
+                    </div>
+                </td>
+                <td data-title="'Aktywny'" style="text-align: center; vertical-align: middle;">
+                <span ng-if="!user.$edit">
+                    <span class="label label-danger" ng-if="!user.enabled">
+                        <span class="glyphicon glyphicon-lock"></span>
+                    </span>
+                    <span class="label label-success" ng-if="user.enabled">
+                        <span class="glyphicon glyphicon-ok"></span>
+                    </span>
+                </span>
+                    <div ng-if="user.$edit">
+                        <toggle-switch ng-model="user.enabled" on-label="tak" off-label="nie"><toggle-switch>
+                    </div>
+                </td>
+                <td data-title="'Akcje'" style="text-align: center; vertical-align: middle;" class="min-width-action-row">
+                    <a class="btn btn-primary btn-sm" ng-click="user.$edit=true" ng-if="!user.$edit">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        Edytuj
+                    </a>
+                    <a class="btn btn-danger btn-sm" ng-click="removeUser(user, $index)" ng-if="!user.$edit">
+                        <span class="glyphicon glyphicon-trash"></span>
+                        Usuń
+                    </a>
+                    <a class="btn btn-success btn-sm" ng-click="saveUser(user)" ng-if="user.$edit">
+                        <span class="glyphicon glyphicon-ok"></span>
+                        Zapisz
+                    </a>
+                    <a class="btn btn-warning btn-sm" ng-click="user.$edit=false" ng-if="user.$edit">
+                        <span class="glyphicon glyphicon-remove"></span>
+                        Anuluj
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
